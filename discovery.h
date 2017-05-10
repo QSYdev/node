@@ -1,7 +1,7 @@
 #ifndef DISCOVERY_H
 #define DISCOVERY_H
  
-void discovery_start();
-void discovery_stop();
+void ICACHE_FLASH_ATTR discovery_start();
+void ICACHE_FLASH_ATTR discovery_stop();
 
 #endif

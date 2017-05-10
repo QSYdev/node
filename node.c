@@ -15,7 +15,7 @@ void node_notify(uint16_t event)
                 discovery_stop();
                 break;
         case TERMINAL_LOST:
-                discovery_stop();
+                discovery_start();
                 break;
         default:
                 break;

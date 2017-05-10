@@ -13,12 +13,12 @@
 
 /* Static functions */ 
 static espconn_sent_callback sent_cb(void *arg);
-static void join_multicast(struct ip_addr * local, struct ip_addr * multicast);
-static void leave_multicast();
-static void setup_timer();
-static void disarm_timer();
+static void ICACHE_FLASH_ATTR join_multicast(struct ip_addr * local, struct ip_addr * multicast);
+static void ICACHE_FLASH_ATTR leave_multicast();
+static void ICACHE_FLASH_ATTR setup_timer();
+static void ICACHE_FLASH_ATTR disarm_timer();
 static void timer_cb(void * arg);
-static void listen_udp();
+static void ICACHE_FLASH_ATTR listen_udp();
 
 /* Static variables */
 static struct qsy_message hello_msg = 
@@ -40,22 +40,24 @@ static struct espconn connection  =
 static struct ip_addr multicast;
 static volatile os_timer_t msg_timer;
 
-void discovery_start()
+void ICACHE_FLASH_ATTR discovery_start()
 {
 	listen_udp();
 	join_multicast((ip_addr_t*)&conf.local_ip,&multicast);
 	setup_timer();
+        os_printf("Sending probes ...\n");
 }
 
-void discovery_stop()
+void ICACHE_FLASH_ATTR discovery_stop()
 {
 	leave_multicast();
 	espconn_disconnect(&connection);
         espconn_delete(&connection);
 	disarm_timer();
+        os_printf("Discovery finished.\n");
 }
 
-static void listen_udp()
+static void ICACHE_FLASH_ATTR listen_udp()
 {
 	os_printf("Setting up UDP...\n");
 
@@ -80,21 +82,21 @@ static void listen_udp()
 	}
 }
 
-static void join_multicast(struct ip_addr * local, struct ip_addr * multicast)
+static void ICACHE_FLASH_ATTR join_multicast(struct ip_addr * local, struct ip_addr * multicast)
 {
 	os_printf("Joining multicast...\n");
 	if(espconn_igmp_join(local, multicast)) 
 		os_printf("IGMP join failed\n");
 }
 
-static void leave_multicast()
+static void ICACHE_FLASH_ATTR leave_multicast()
 {
-	os_printf("leave_multicast: not implemented.\n");
+        if(espconn_igmp_leave((struct ip_addr*) &conf.local_ip, &multicast)) 
+		os_printf("IGMP leave failed\n");
 }
 
 static espconn_sent_callback sent_cb(void *arg)
 {
-	os_printf("Sent hello message.\n");
         return NULL;
 }
 
@@ -105,14 +107,14 @@ static void timer_cb(void * arg)
 	}
 }
 
-static void setup_timer()
+static void ICACHE_FLASH_ATTR setup_timer()
 {
 	os_timer_disarm(&msg_timer);
 	os_timer_setfn(&msg_timer, (os_timer_func_t*) timer_cb, NULL);
 	os_timer_arm(&msg_timer, PERIOD, true);
 } 
 
-static void disarm_timer()
+static void ICACHE_FLASH_ATTR disarm_timer()
 {
 	os_timer_disarm(&msg_timer);
 }
