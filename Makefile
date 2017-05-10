@@ -3,7 +3,7 @@ CFLAGS = -I. -mlongcalls -DICACHE_FLASH -Wall
 LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lc -Wl,--end-group -lgcc
 LDFLAGS = -Teagle.app.v6.ld
 
-image: node
+node-0x00000.bin: node
 	esptool.py elf2image $^ 
 
 node: node.o led.o discovery.o wifi.o command.o
@@ -14,13 +14,13 @@ discovery.o: discovery.c discovery.h message.h protocol.h
 
 led.o: led.c led.h
 
-wifi.o: wifi.c wifi.h
+wifi.o: wifi.c wifi.h ssid.h
 
 command.o: command.c command.h
 
 id.o: id.h
 
-flash: image
+flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin
 
 clean: 
