@@ -1,8 +1,8 @@
 #ifndef H_SSID
 #define H_SSID
 
-const char SSID[32] = "Fibertel";
+const char SSID[32] = "QSY";
 
-const char PASSWORD[64] = "lipschitzpotato";
+const char PASSWORD[64] = "aaaaaaaa";
 
 #endif
