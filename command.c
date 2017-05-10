@@ -26,6 +26,7 @@ static void ICACHE_FLASH_ATTR listen();
 /* Listening callbacks */
 static void ICACHE_FLASH_ATTR connect_cb(void *arg);
 static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error);
+static void ICACHE_FLASH_ATTR disconnect_cb(void *arg);
 
 /* Actual connection callbacks */
 static void recv_callback(void * arg, char *pdata, unsigned short len);
@@ -51,9 +52,12 @@ static ICACHE_FLASH_ATTR void listen()
 static void ICACHE_FLASH_ATTR connect_cb(void *connection)
 {
 	os_printf("Connected to terminal.\n");
-	if(espconn_set_opt(&listen_socket, ESPCONN_KEEPALIVE | ESPCONN_NODELAY))
-		os_printf("command_init: failed to set options.\n");
-	espconn_regist_recvcb(connection, (espconn_recv_callback) recv_callback);
+	if (espconn_set_opt(&listen_socket, ESPCONN_KEEPALIVE | ESPCONN_NODELAY))
+		os_printf("connect_init: failed to set options.\n");
+	if (espconn_regist_recvcb(connection, (espconn_recv_callback) recv_callback))
+		os_printf("command_init: failed to set receive callback.\n");
+	if (espconn_regist_disconcb(connection, (espconn_connect_callback) disconnect_cb))
+		os_printf("command_init: failed to set disconnect callback.\n");
 	node_notify(GOT_TERMINAL);
 }
 
@@ -76,6 +80,12 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 		os_printf("TCP connection failure.\n");
 		break;
 	}
+	node_notify(TERMINAL_LOST);
+}
+
+static void ICACHE_FLASH_ATTR disconnect_cb(void *arg)
+{
+	os_printf("Terminal disconnected.\n");
 	node_notify(TERMINAL_LOST);
 }
 
