@@ -42,6 +42,7 @@ static volatile os_timer_t msg_timer;
 
 void ICACHE_FLASH_ATTR discovery_start()
 {
+        led_set(0);
 	listen_udp();
 	join_multicast((ip_addr_t*)&conf.local_ip,&multicast);
 	setup_timer();

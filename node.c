@@ -10,6 +10,7 @@ void node_notify(uint16_t event)
 	switch(event) {
 	case GOT_IP:
 		discovery_start();
+                command_init();
 		break;
 	case GOT_TERMINAL:
 		discovery_stop();
@@ -27,5 +28,4 @@ void ICACHE_FLASH_ATTR user_init()
 	uart_div_modify(0, UART_CLK_FREQ / 115200);
 	led_init();
 	wifi_init();
-	command_init();
 }
