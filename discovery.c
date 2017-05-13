@@ -7,7 +7,6 @@
 #include "discovery.h"
 #include "message.h"
 #include "protocol.h"
-#include "led.h"
 
 /* In miliseconds */
 #define PERIOD 500
@@ -43,7 +42,6 @@ static volatile os_timer_t msg_timer;
 
 void ICACHE_FLASH_ATTR discovery_start()
 {
-        led_set(0);
 	listen_udp();
 	join_multicast((ip_addr_t*)&conf.local_ip,&multicast);
 	setup_timer();
@@ -99,7 +97,6 @@ static void ICACHE_FLASH_ATTR leave_multicast()
 
 static espconn_sent_callback sent_cb(void *arg)
 {
-        led_toggle();
         return NULL;
 }
 
