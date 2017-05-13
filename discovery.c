@@ -7,6 +7,7 @@
 #include "discovery.h"
 #include "message.h"
 #include "protocol.h"
+#include "led.h"
 
 /* In miliseconds */
 #define PERIOD 500
@@ -98,6 +99,7 @@ static void ICACHE_FLASH_ATTR leave_multicast()
 
 static espconn_sent_callback sent_cb(void *arg)
 {
+        led_toggle();
         return NULL;
 }
 

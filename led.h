@@ -5,5 +5,6 @@
 
 void led_init();
 void led_set(uint16_t color);
+void led_toggle();
 
 #endif
