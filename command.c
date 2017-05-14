@@ -1,9 +1,11 @@
+#include <stdbool.h>
 #include "command.h"
 #include "osapi.h"
 #include "os_type.h"
 #include "ip_addr.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "network.h"
 #include "protocol.h"
 #include "message.h"
 #include "led.h"
@@ -20,6 +22,10 @@ static struct espconn listen_socket =
 	.state = ESPCONN_NONE,
 	.proto = &tcp_params
 };
+
+static volatile os_timer_t delay_timer;
+static void command_function(void *parg);
+static uint16_t color;
 
 static void ICACHE_FLASH_ATTR listen();
 
@@ -93,17 +99,37 @@ static void recv_callback(void * connection, char *pdata, unsigned short len)
 {	
 	if(len != QSY_MSG_SIZE) {
 		os_printf("Non-aligned messages are not yet implemented.");
+	} else {
+		struct qsy_message * msg = (struct qsy_message*) pdata;
+
+		if (msg->signature[0] == 'Q' && msg->signature[1] == 'S' && msg->signature[2] == 'Y') {
+			switch(msg->type) {
+				case CMD_MSG: {
+					os_timer_disarm(&delay_timer);
+					//os_timer_setfn(&delay_timer, (os_timer_func_t*) command_function, (void *) ntohs(msg->color));
+					color = msg->color;
+					os_timer_setfn(&delay_timer, (os_timer_func_t*) command_function, NULL);
+					os_timer_arm(&delay_timer, ntohl(msg->delay), false);
+					break;
+				}
+			}
+
+			/* Integral default promotion, beware */
+			os_printf("Received TCP segment:\n");
+			os_printf("  Command type: %u\n", msg->type);
+			os_printf("  Phase: %u\n", msg->phase);
+			os_printf("  Color: %u\n", msg->color);
+			os_printf("  Delay: %u\n",  msg->delay);
+			os_printf("  Id: %u\n",  msg->id);
+		}
+
 	}
 
-	struct qsy_message * msg = (struct qsy_message*) pdata;
-	/* Integral default promotion, beware */
-	os_printf("Received TCP segment:\n");
-	os_printf("  Command type: %u\n", msg->type);
-	os_printf("  Phase: %u\n", msg->phase);
-	os_printf("  Color: %u\n", msg->color);
-	os_printf("  Delay: %u\n",  msg->delay);
-	os_printf("  Id: %u\n",  msg->id);
+}
 
-	// TODO: ntohs !
-	led_set(msg->color);
+static void ICACHE_FLASH_ATTR command_function(void *parg)
+{
+	//uint16_t color = (uint16_t *) parg;
+	led_set(color);
+	os_timer_disarm(&delay_timer);
 }

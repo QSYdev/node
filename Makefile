@@ -16,7 +16,7 @@ led.o: led.c led.h
 
 wifi.o: wifi.c wifi.h ssid.h
 
-command.o: command.c command.h
+command.o: command.c command.h network.h protocol.h message.h led.h node.h
 
 id.o: id.h
 

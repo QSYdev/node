@@ -8,7 +8,7 @@ uint16_t inline ntohs(uint16_t s)
 
 uint32_t inline ntohl(uint32_t l)
 {
-        return ntohs((l & 0xFFFF0000) >> 16) | (ntohs(l & 0xFFFF) << 16)
+        return ntohs((l & 0xFFFF0000) >> 16) | (ntohs(l & 0xFFFF) << 16);
 }
 
 uint16_t inline htons(uint16_t s)
