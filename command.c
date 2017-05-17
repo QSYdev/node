@@ -117,9 +117,9 @@ static void recv_callback(void * connection, char *pdata, unsigned short len)
 			/* Integral default promotion, beware */
 			os_printf("Received TCP segment:\n");
 			os_printf("  Command type: %u\n", msg->type);
-			os_printf("  Phase: %u\n", msg->phase);
-			os_printf("  Color: %u\n", msg->color);
-			os_printf("  Delay: %u\n",  msg->delay);
+			os_printf("  Phase: %u\n", ntohs(msg->phase));
+			os_printf("  Color: %u\n", ntohs(msg->color));
+			os_printf("  Delay: %u\n",  ntohl(msg->delay));
 			os_printf("  Id: %u\n",  msg->id);
 		}
 
