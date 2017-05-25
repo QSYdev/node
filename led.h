@@ -3,9 +3,7 @@
 
 #include <stdint.h>
 
-void led_init();
-void led_set(uint16_t color);
-void led_blink_start(uint16_t color, uint16_t interval);
-void led_blink_stop();
+void ICACHE_FLASH_ATTR led_init(void);
+void ICACHE_FLASH_ATTR led_set_color(uint16_t color);
 
 #endif

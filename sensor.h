@@ -1,8 +1,8 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-void sensor_init();
-void sensor_arm();
-void sensor_disarm();
+void ICACHE_FLASH_ATTR sensor_init(void);
+void ICACHE_FLASH_ATTR sensor_start(void);
+void ICACHE_FLASH_ATTR sensor_stop(void);
 
 #endif

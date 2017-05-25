@@ -1,6 +1,6 @@
 #ifndef WIFI_H
-#define WIFI
+#define WIFI_H
 
-void wifi_init();
+void ICACHE_FLASH_ATTR wifi_init(void);
 
 #endif

@@ -45,8 +45,7 @@ void ICACHE_FLASH_ATTR command_init()
 
 static ICACHE_FLASH_ATTR void listen()
 {
-	espconn_regist_connectcb(&listen_socket,
-	 (espconn_connect_callback) connect_cb);
+	espconn_regist_connectcb(&listen_socket,(espconn_connect_callback) connect_cb);
 	espconn_regist_reconcb(&listen_socket, (espconn_reconnect_callback) reconnect_cb);
 
 	espconn_accept(&listen_socket);
@@ -95,8 +94,7 @@ static void ICACHE_FLASH_ATTR disconnect_cb(void *arg)
 	node_notify(TERMINAL_LOST);
 }
 
-static void recv_callback(void * connection, char *pdata, unsigned short len)
-{	
+static void recv_callback(void * connection, char *pdata, unsigned short len) {
 	if(len != QSY_MSG_SIZE) {
 		os_printf("Non-aligned messages are not yet implemented.");
 	} else {

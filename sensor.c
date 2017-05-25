@@ -5,24 +5,21 @@
 #include "ets_sys.h"
 #include "sensor.h"
 
-static void gpio_handler();
+static void sensor_cb();
 
-void ICACHE_FLASH_ATTR sensor_init()
-{
+void ICACHE_FLASH_ATTR sensor_init(void) {
 }
 
-void ICACHE_FLASH_ATTR sensor_arm()
-{
+void ICACHE_FLASH_ATTR sensor_start(void) {
 	ETS_GPIO_INTR_DISABLE();
 
 	gpio_pin_intr_state_set(GPIO_ID_PIN(0), GPIO_PIN_INTR_POSEDGE);
-	ETS_GPIO_INTR_ATTACH(gpio_handler, NULL);
+	ETS_GPIO_INTR_ATTACH(sensor_cb, NULL);
 
 	ETS_GPIO_INTR_ENABLE();
 }
 
-void ICACHE_FLASH_ATTR sensor_disarm()
-{
+void ICACHE_FLASH_ATTR sensor_disarm(void) {
 	ETS_GPIO_INTR_DISABLE();
 
 	gpio_pin_intr_state_set(GPIO_ID_PIN(0), GPIO_PIN_INTR_DISABLE);
@@ -30,11 +27,9 @@ void ICACHE_FLASH_ATTR sensor_disarm()
 	ETS_GPIO_INTR_ENABLE();
 }
 
-static void gpio_handler()
-{
-	os_printf("Button pressed!\n");
+static void sensor_cb(void) {
+	//TODO notificar a alguien cuando fue pulsado.
 
-	/* Clear interrupt */
 	uint32_t gpio_status = GPIO_REG_READ(GPIO_STATUS_ADDRESS);
 	GPIO_REG_WRITE(GPIO_STATUS_W1TC_ADDRESS, gpio_status);
 }
