@@ -8,7 +8,6 @@
 #include "network.h"
 #include "protocol.h"
 #include "message.h"
-#include "led.h"
 #include "node.h"
 
 static struct _esp_tcp tcp_params =
@@ -82,7 +81,7 @@ static void ICACHE_FLASH_ATTR disconnect_cb(void *arg) {
 	node_notify(TERMINAL_LOST);
 }
 
-static void recv_cb(void * connection, char *pdata, unsigned short len) {
+static void recv_cb(void* connection, char *pdata, unsigned short len) {
     //TODO implementar.
 }
 

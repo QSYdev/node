@@ -5,5 +5,6 @@
 
 void ICACHE_FLASH_ATTR tcp_connection_init(void);
 void ICACHE_FLASH_ATTR tcp_connection_set_recv_callback(void); //TODO cambiar el parametro que recibe.
+void ICACHE_FLASH_ATTR tcp_connection_send_message(void* message, int length); //TODO implementar.
 
 #endif

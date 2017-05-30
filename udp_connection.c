@@ -53,7 +53,6 @@ void ICACHE_FLASH_ATTR udp_connection_init(void) {
 }
 
 void ICACHE_FLASH_ATTR udp_connection_send_message(void* message, int length) {
-	//TODO comprobar si son los parametros correctos.
     if(espconn_sendto(&connection, message, length)) {
 		os_printf("espconn_sendto: failed!");
 	}

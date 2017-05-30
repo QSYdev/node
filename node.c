@@ -1,11 +1,11 @@
 #include "ets_sys.h"
-#include "discovery.h"
 #include "led.h"
 #include "wifi.h"
 #include "tcp_connection.h"
 #include "udp_connection.h"
 #include "node.h"
 #include "sensor.h"
+#include "hello.h"
 
 void node_notify(uint16_t event) {
 	switch(event) {
