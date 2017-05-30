@@ -1,10 +1,11 @@
 #include <stdint.h>
 
-#define QSY_MSG_SIZE 16
-#define HELLO_MSG  0
-#define CMD_MSG    1
-#define TOUCHE_MSG 2
-#define RENAME_MSG 3
+#define QSY_MSG_SIZE    16
+#define HELLO_MSG       0
+#define CMD_MSG         1
+#define TOUCHE_MSG      2
+#define RENAME_MSG      3
+#define KEEP_ALIVE_MS   4
 
 #define RED_MASK    0x000F
 #define GREEN_MASK  0x00F0
@@ -19,7 +20,7 @@
 #define COLOR(r,g,b,w) (  (r)        & RED_MASK  ) | \
                        ( ((g) << 4)  & GREEN_MASK) | \
 					   ( ((b) << 8)  & BLUE_MASK ) | \
-					   ( ((w) << 12) & WHITE_MASK)  
+					   ( ((w) << 12) & WHITE_MASK)
 
 struct qsy_message
 {
