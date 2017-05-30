@@ -6,15 +6,18 @@
 #include "node.h"
 #include "sensor.h"
 #include "hello.h"
+#include "command.h"
 
 void node_notify(uint16_t event) {
 	switch(event) {
 	case GOT_IP:
     case TERMINAL_LOST:
 		hello_start();
+		command_stop();
 		break;
 	case GOT_TERMINAL:
 		hello_stop();
+		command_start();
 		break;
 	default:
 		break;

@@ -5,10 +5,10 @@
 #include "ip_addr.h"
 #include "user_interface.h"
 #include "espconn.h"
-#include "network.h"
 #include "protocol.h"
 #include "message.h"
 #include "node.h"
+#include "message_receiver.h"
 
 static struct _esp_tcp tcp_params =
 {
@@ -25,7 +25,7 @@ static struct espconn listen_socket =
 static void ICACHE_FLASH_ATTR connect_cb(void *arg);
 static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error);
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg);
-static void recv_cb(void * arg, char *pdata, unsigned short len);
+static void recv_cb(void * arg, char* pdata, unsigned short len);
 
 void ICACHE_FLASH_ATTR tcp_connection_init(void) {
     espconn_regist_connectcb(&listen_socket,(espconn_connect_callback) connect_cb);
@@ -36,6 +36,7 @@ void ICACHE_FLASH_ATTR tcp_connection_init(void) {
 	if(espconn_regist_time(&listen_socket, 0, 0)) {
 		os_printf("tcp_connection: failed to set timeout.\n");
     }
+
 }
 
 static void ICACHE_FLASH_ATTR connect_cb(void *connection) {
@@ -81,10 +82,10 @@ static void ICACHE_FLASH_ATTR disconnect_cb(void *arg) {
 	node_notify(TERMINAL_LOST);
 }
 
-static void recv_cb(void* connection, char *pdata, unsigned short len) {
-    //TODO implementar.
+static void recv_cb(void* connection, char* pdata, unsigned short len) {
+	message_receiver_cb(pdata, len);
 }
 
-void ICACHE_FLASH_ATTR tcp_connection_set_recv_callback(void) {
-	//TODO tiene que recibir como argumento, una funcion con el mismo prototipo de la funcion recv_cb
+void ICACHE_FLASH_ATTR tcp_connection_send_message(void* message, int length) {
+	//TODO implementar.
 }
