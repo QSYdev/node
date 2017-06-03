@@ -5,7 +5,7 @@
 #define CMD_MSG         1
 #define TOUCHE_MSG      2
 #define RENAME_MSG      3
-#define KEEP_ALIVE_MS   4
+#define KEEP_ALIVE_MSG  4
 
 #define RED_MASK    0x000F
 #define GREEN_MASK  0x00F0

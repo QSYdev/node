@@ -14,7 +14,7 @@
 static struct qsy_message keep_alive_msg =
 {
 	.signature = {'Q', 'S', 'Y'},
-	.type = KEEP_ALIVE_MS
+	.type = KEEP_ALIVE_MSG
 };
 
 static volatile os_timer_t msg_timer;
