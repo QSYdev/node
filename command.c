@@ -23,7 +23,8 @@ static uint32_t rtc_value;
 
 static struct qsy_message touche_message =
 {
-	.signature = {'Q','S','Y'}
+	.signature = {'Q','S','Y'},
+	.type = TOUCHE_MSG
 };
 
 void command_start(void) {
@@ -44,8 +45,6 @@ void command_message_received(char *pdata) {
 			       (os_timer_func_t *) command_function,
 			       (void *) ntohs(msg->color));
 		os_timer_arm(&delay_timer, ntohl(msg->delay), false);
-		if (msg->color)
-			armed = true;
 	}
 }
 
@@ -57,15 +56,17 @@ void command_touched(void) {
 		delay *= system_rtc_clock_cali_proc() >> 12;
 		/* milisegundos */
 		delay /= 1000;
-		touche_message.delay = delay;
+		touche_message.delay = htonl(delay);
 		tcp_connection_send_message(&touche_message, sizeof(touche_message));
 		armed = false;
+		led_set_color(0);
 	}
 }
 
 static void ICACHE_FLASH_ATTR command_function(void *parg) {
-	uint16_t color = (uint16_t *) parg;
+	uint16_t color = (uint16_t) parg;
 	led_set_color(color);
+	if (color)
+		armed = true;
 	os_timer_disarm(&delay_timer);
-
 }

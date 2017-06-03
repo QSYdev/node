@@ -8,10 +8,6 @@
 
 static void sensor_cb();
 
-/* Para antirebote */
-static uint32_t rtc_value;
-/* Aprox 10 milisegundos*/
-#define DEBOUNCE_CYCLES 1700
 
 void ICACHE_FLASH_ATTR sensor_init(void) {
 	ETS_GPIO_INTR_DISABLE();

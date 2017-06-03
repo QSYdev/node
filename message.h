@@ -1,4 +1,6 @@
 #include <stdint.h>
+#ifndef MESSAGE_H
+#define MESSAGE_H
 
 #define QSY_MSG_SIZE    16
 #define HELLO_MSG       0
@@ -32,3 +34,5 @@ struct qsy_message
 	uint8_t  id;
 	uint8_t  reserved[3];
 } __attribute__((packed));
+
+#endif

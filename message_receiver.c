@@ -1,12 +1,5 @@
 #include "message_receiver.h"
 #include "command.h"
-#include "osapi.h"
-#include "os_type.h"
-#include "ip_addr.h"
-#include "user_interface.h"
-#include "espconn.h"
-#include "protocol.h"
-#include "message.h"
 
 void message_receiver_cb(char* pdata, unsigned short length) {
     if(length == QSY_MSG_SIZE) {
