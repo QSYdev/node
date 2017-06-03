@@ -33,5 +33,5 @@ void ICACHE_FLASH_ATTR user_init() {
 	tcp_connection_init();
 	led_init();
 	wifi_init();
-    sensor_init();
+	sensor_init();
 }
