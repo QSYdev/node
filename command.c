@@ -21,23 +21,25 @@ static bool armed = false;
 /* Valor de RTC al prender un LED */
 static uint32_t rtc_value;
 
-static struct qsy_message touche_message =
-{
-	.signature = {'Q','S','Y'},
+static struct qsy_message touche_message = {
+	.signature = {'Q', 'S', 'Y'},
 	.type = TOUCHE_MSG
 };
 
-void command_start(void) {
+void command_start(void)
+{
 	on = true;
 }
 
-void command_stop(void) {
+void command_stop(void)
+{
 	on = false;
 	armed = false;
 	os_timer_disarm(&delay_timer);
 }
 
-void command_message_received(char *pdata) {
+void command_message_received(char *pdata)
+{
 	if (on) {
 		struct qsy_message *msg = (struct qsy_message *) pdata;
 		os_timer_disarm(&delay_timer);
@@ -48,22 +50,25 @@ void command_message_received(char *pdata) {
 	}
 }
 
-void command_touched(void) {
+void command_touched(void)
+{
 	if (on && armed) {
-		/* clocks*/
+		/* clocks */
 		uint32_t delay = rtc_value - system_get_rtc_time();
 		/* microsegundos */
 		delay *= system_rtc_clock_cali_proc() >> 12;
 		/* milisegundos */
 		delay /= 1000;
 		touche_message.delay = htonl(delay);
-		tcp_connection_send_message((void*) &touche_message, QSY_MSG_SIZE);
+		tcp_connection_send_message((void *) &touche_message,
+					    QSY_MSG_SIZE);
 		armed = false;
 		led_set_color(0);
 	}
 }
 
-static void ICACHE_FLASH_ATTR command_function(void *parg) {
+static void ICACHE_FLASH_ATTR command_function(void *parg)
+{
 	uint16_t color = (uint16_t) parg;
 	led_set_color(color);
 	if (color)

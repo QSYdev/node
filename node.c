@@ -9,10 +9,11 @@
 #include "command.h"
 #include "keep_alive.h"
 
-void node_notify(uint16_t event) {
-	switch(event) {
+void node_notify(uint16_t event)
+{
+	switch (event) {
 	case GOT_IP:
-    case TERMINAL_LOST:
+	case TERMINAL_LOST:
 		hello_start();
 		command_stop();
 		keep_alive_stop();
@@ -27,7 +28,8 @@ void node_notify(uint16_t event) {
 	}
 }
 
-void ICACHE_FLASH_ATTR user_init() {
+void ICACHE_FLASH_ATTR user_init()
+{
 	uart_div_modify(0, UART_CLK_FREQ / 115200);
 
 	tcp_connection_init();
