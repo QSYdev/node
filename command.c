@@ -57,7 +57,7 @@ void command_touched(void) {
 		/* milisegundos */
 		delay /= 1000;
 		touche_message.delay = htonl(delay);
-		tcp_connection_send_message(&touche_message, sizeof(touche_message));
+		tcp_connection_send_message((void*) &touche_message, QSY_MSG_SIZE);
 		armed = false;
 		led_set_color(0);
 	}

@@ -8,7 +8,6 @@
 
 static void sensor_cb();
 
-
 void ICACHE_FLASH_ATTR sensor_init(void) {
 	ETS_GPIO_INTR_DISABLE();
 
@@ -18,7 +17,7 @@ void ICACHE_FLASH_ATTR sensor_init(void) {
 	ETS_GPIO_INTR_ENABLE();
 }
 
-void ICACHE_FLASH_ATTR sensor_disarm(void) {
+void ICACHE_FLASH_ATTR sensor_stop(void) {
 	ETS_GPIO_INTR_DISABLE();
 
 	gpio_pin_intr_state_set(GPIO_ID_PIN(0), GPIO_PIN_INTR_DISABLE);

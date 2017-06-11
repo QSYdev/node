@@ -9,7 +9,7 @@
 #include "user_interface.h"
 #include "espconn.h"
 
-#define PERIOD 500
+#define PERIOD 10000
 
 static struct qsy_message keep_alive_msg =
 {
