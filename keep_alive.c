@@ -9,11 +9,12 @@
 #include "user_interface.h"
 #include "espconn.h"
 
-#define PERIOD 10000
+#define PERIOD 500
 
 static struct qsy_message keep_alive_msg = {
 	.signature = {'Q', 'S', 'Y'},
-	.type = KEEP_ALIVE_MSG
+	.type = KEEP_ALIVE_MSG,
+	.id = NODE_ID
 };
 
 static volatile os_timer_t msg_timer;

@@ -2,12 +2,10 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#define QSY_MSG_SIZE    16
 #define HELLO_MSG       0
 #define CMD_MSG         1
 #define TOUCHE_MSG      2
-#define RENAME_MSG      3
-#define KEEP_ALIVE_MSG  4
+#define KEEP_ALIVE_MSG  3
     
 #define RED_MASK    0x000F
 #define GREEN_MASK  0x00F0
@@ -22,14 +20,16 @@
 #define COLOR(r,g,b,w) (  (r)        & RED_MASK  ) | \
 (((g) << 4) & GREEN_MASK) | \
     (((b) << 8) & BLUE_MASK) | \
-    (((w) << 12) & WHITE_MASK)  struct qsy_message  {
-	char signature[3];
-	 uint8_t type;
-	 uint16_t phase;
-	 uint16_t color;
-	 uint32_t delay;
-	 uint8_t id;
-	 uint8_t reserved[3];
-} __attribute__ ((packed));
- 
+    (((w) << 12) & WHITE_MASK) 
+ 
+struct qsy_message {	
+	char signature[3];
+	uint8_t type;	
+	uint16_t id;	
+	uint16_t color;
+	uint32_t delay;
+} __attribute__ ((packed));
+
+#define QSY_MSG_SIZE 12
+ 
 #endif

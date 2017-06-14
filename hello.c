@@ -14,7 +14,8 @@
 
 static struct qsy_message hello_msg = {
 	.signature = {'Q', 'S', 'Y'},
-	.type = HELLO_MSG
+	.type = HELLO_MSG,
+	.id = NODE_ID
 };
 
 static volatile os_timer_t msg_timer;

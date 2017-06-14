@@ -8,7 +8,6 @@
 #include "led.h"
 
 
-
 static volatile os_timer_t delay_timer;
 static void ICACHE_FLASH_ATTR command_function(void *parg);
 
@@ -23,7 +22,9 @@ static uint32_t rtc_value;
 
 static struct qsy_message touche_message = {
 	.signature = {'Q', 'S', 'Y'},
-	.type = TOUCHE_MSG
+	.type = TOUCHE_MSG,
+	/* Debe estar definida una macro "ID" con un uint16_t */
+	.id = NODE_ID
 };
 
 void command_start(void)
