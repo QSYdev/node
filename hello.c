@@ -43,6 +43,7 @@ void ICACHE_FLASH_ATTR hello_stop(void)
 
 static void timer_cb(void *arg)
 {
+	hello_msg.id = htons(NODE_ID);
 	udp_connection_send_message((void *) &hello_msg, QSY_MSG_SIZE);
 	if (color == 0) {
 		color = 0xF000;

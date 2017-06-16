@@ -8,7 +8,7 @@ node-0x00000.bin: node
 
 node: hello.o led.o node.o wifi.o udp_connection.o tcp_connection.o sensor.o command.o message_receiver.o keep_alive.o
 
-hello.o: hello.c hello.h message.h protocol.h udp_connection.h
+hello.o: hello.c hello.h message.h protocol.h udp_connection.h network.h
 
 led.o: led.c led.h
 
@@ -26,7 +26,7 @@ command.o: command.c command.h network.h protocol.h led.h
 
 message_receiver.o: message_receiver.c message_receiver.h command.h network.h protocol.h message.h
 
-keep_alive.o: keep_alive.c keep_alive.h tcp_connection.h message.h
+keep_alive.o: keep_alive.c keep_alive.h tcp_connection.h message.h network.h
 
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin
