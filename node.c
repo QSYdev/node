@@ -16,12 +16,12 @@ void node_notify(uint16_t event)
 	case TERMINAL_LOST:
 		hello_start();
 		command_stop();
-		//keep_alive_stop();
+		keep_alive_stop();
 		break;
 	case GOT_TERMINAL:
 		hello_stop();
 		command_start();
-		//keep_alive_start();
+		keep_alive_start();
 		break;
 	default:
 		break;
