@@ -61,7 +61,7 @@ void command_touched(void)
 		touche_message.delay = htonl(delay);
 		touche_message.id = htons(NODE_ID);
 		tcp_connection_send_message((void *) &touche_message, QSY_MSG_SIZE);
-		os_printf("Touche sent id = %d htonl(delay) = %ld.\nTouche sent delay = %ld", touche_message.id,touche_message.delay, delay);
+		os_printf("Touche sent id = %d htonl(delay) = %ld.\nTouche sent delay = %ld\n", touche_message.id,touche_message.delay, delay);
 		armed = false;
 		led_set_color(0);
 	}

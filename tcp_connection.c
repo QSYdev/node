@@ -102,5 +102,25 @@ static void recv_cb(void *conn, char *pdata, unsigned short len)
 void ICACHE_FLASH_ATTR tcp_connection_send_message(void *message,
 						   int length)
 {
-	espconn_send(connection, message, length);
+	uint8_t res;
+	if (res = espconn_send(connection, message, length)) {
+		os_printf("tcp_connection_send_message: \n");
+		switch (res) {
+		case ESPCONN_MEM:
+			os_printf("Out of memory.\n");
+			break;
+		case ESPCONN_ARG:
+			os_printf("Illegal argument.\n");
+			break;
+		case ESPCONN_MAX:
+			os_printf("Outgoing buffer full.\n");
+			break;
+		case ESPCONN_IF:
+			os_printf("UDP failed. (?)\n");
+			break;
+		default:
+			os_printf("Returned %d\n", (int) res);
+		}
+
+	}
 }
