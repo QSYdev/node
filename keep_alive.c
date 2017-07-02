@@ -35,5 +35,5 @@ void ICACHE_FLASH_ATTR keep_alive_stop(void)
 static void timer_cb(void *arg)
 {
 	keep_alive_msg.id = htons(NODE_ID);
-	tcp_connection_send_message((void *) &keep_alive_msg, QSY_MSG_SIZE);
+	tcp_connection_send_message(&keep_alive_msg);
 }
