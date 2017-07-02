@@ -12,7 +12,7 @@
 
 #define PERIOD 500
 
-#ifndef id
+#ifndef NODE_ID
 #error ID for this node not defined!
 #endif
 

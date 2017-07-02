@@ -9,6 +9,7 @@
 #include "message.h"
 #include "node.h"
 #include "message_receiver.h"
+#include "queue.h"
 
 static struct _esp_tcp tcp_params = {
 	.local_port = QSY_LISTEN_PORT
@@ -24,6 +25,7 @@ static void ICACHE_FLASH_ATTR connect_cb(void *arg);
 static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error);
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg);
 static void recv_cb(void *conn, char *pdata, unsigned short len);
+
 
 static struct espconn *connection;
 
@@ -69,7 +71,7 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 {
 	switch (error) {
 	case ESPCONN_TIMEOUT:
-		os_printf("Tcp connection timed out.\n");
+		os_printf("TCP connection timed out.\n");
 		break;
 	case ESPCONN_ABRT:
 		os_printf("TCP connection aborted.\n");
@@ -102,7 +104,7 @@ static void recv_cb(void *conn, char *pdata, unsigned short len)
 void ICACHE_FLASH_ATTR tcp_connection_send_message(void *message,
 						   int length)
 {
-	uint8_t res;
+	int8_t res;
 	if (res = espconn_send(connection, message, length)) {
 		os_printf("tcp_connection_send_message: \n");
 		switch (res) {
@@ -121,6 +123,5 @@ void ICACHE_FLASH_ATTR tcp_connection_send_message(void *message,
 		default:
 			os_printf("Returned %d\n", (int) res);
 		}
-
 	}
 }
