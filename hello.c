@@ -12,6 +12,10 @@
 
 #define PERIOD 500
 
+#ifndef id
+#error ID for this node not defined!
+#endif
+
 static struct qsy_message hello_msg = {
 	.signature = {'Q', 'S', 'Y'},
 	.type = HELLO_MSG,
