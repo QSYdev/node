@@ -26,19 +26,19 @@ static struct qsy_message touche_message = {
 	.id = NODE_ID
 };
 
-void command_start(void)
+void ICACHE_FLASH_ATTR command_start(void)
 {
 	on = true;
 }
 
-void command_stop(void)
+void ICACHE_FLASH_ATTR command_stop(void)
 {
 	on = false;
 	armed = false;
 	os_timer_disarm(&delay_timer);
 }
 
-void command_message_received(char *pdata)
+void ICACHE_FLASH_ATTR command_message_received(char *pdata)
 {
 	if (on) {
 		struct qsy_message *msg = (struct qsy_message *) pdata;
@@ -49,7 +49,7 @@ void command_message_received(char *pdata)
 	}
 }
 
-void command_touched(void)
+void ICACHE_FLASH_ATTR command_touched(void)
 {
 	if (on && armed) {
 		/* clocks */

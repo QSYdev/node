@@ -27,7 +27,7 @@ void ICACHE_FLASH_ATTR sensor_stop(void)
 	ETS_GPIO_INTR_ENABLE();
 }
 
-static void sensor_cb(void)
+static void ICACHE_FLASH_ATTR sensor_cb(void)
 {
 	command_touched();
 	uint32_t gpio_status = GPIO_REG_READ(GPIO_STATUS_ADDRESS);
