@@ -51,6 +51,7 @@ void ICACHE_FLASH_ATTR tcp_connection_init(void)
 		os_printf("tcp_connection: failed to set timeout.\n");
 	}
 
+	ready_to_send = true;
 }
 
 static void ICACHE_FLASH_ATTR connect_cb(void *arg)
