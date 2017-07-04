@@ -143,7 +143,7 @@ static void ICACHE_FLASH_ATTR do_send_message(struct qsy_message *message)
 	}
 }
 
-static struct qsy_message msg; // hmm
+static struct qsy_message msg;
 
 static void ICACHE_FLASH_ATTR sent_cb(void *conn)
 {
@@ -158,7 +158,7 @@ static void ICACHE_FLASH_ATTR sent_cb(void *conn)
 
 void ICACHE_FLASH_ATTR tcp_connection_send_message(struct qsy_message *message)
 {
-	if (ready_to_send && queue_is_empty(message_queue)) {
+	if (ready_to_send) {
 		msg = *message;
 		do_send_message(&msg);
 		ready_to_send = false;

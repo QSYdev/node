@@ -35,9 +35,9 @@ ICACHE_FLASH_ATTR struct queue *queue_create(uint8_t elem_size, uint8_t capacity
 }
 
 ICACHE_FLASH_ATTR void queue_push(struct queue *q, const void *elem) {
+	os_memcpy(q->data + q->head * q->elem_size, elem, q->elem_size);
 	q->head = (q->head + 1) % q->capacity;
 	q->size++;
-	os_memcpy(q->data + q->head * q->elem_size, elem, q->elem_size);
 }
 
 ICACHE_FLASH_ATTR void queue_pop(struct queue *q, void *elem) {
