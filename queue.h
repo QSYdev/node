@@ -31,6 +31,11 @@ bool queue_is_empty(const struct queue *q);
 bool queue_is_full(const struct queue *q);
 
 /*
+ * Clear all contents of a queue.
+ */
+void queue_clear(struct queue *q);
+
+/*
  * Frees memory used by queue.
  */
 void queue_destroy(struct queue *q);

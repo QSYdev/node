@@ -54,6 +54,10 @@ ICACHE_FLASH_ATTR bool queue_is_full(const struct queue *q) {
 	return q->size == q->capacity;
 }
 
+ICACHE_FLASH_ATTR void queue_clear(struct queue *q) {
+	q->head = q->tail = q->size = 0;
+}
+
 ICACHE_FLASH_ATTR void queue_destroy(struct queue *q) {
 	os_free(q->data);
 	os_free(q);
