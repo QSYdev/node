@@ -52,11 +52,7 @@ void ICACHE_FLASH_ATTR command_message_received(char *pdata)
 void ICACHE_FLASH_ATTR command_touched(void)
 {
 	if (on && armed) {
-		/* clocks */
-		uint32_t delay = system_get_rtc_time() - rtc_value;
-		/* microsegundos */
-		delay *= system_rtc_clock_cali_proc() >> 12;
-		/* milisegundos */
+		uint32_t delay = system_get_time() - rtc_value;
 		delay /= 1000;
 		touche_message.delay = htonl(delay);
 		touche_message.id = htons(NODE_ID);
@@ -74,7 +70,7 @@ static void ICACHE_FLASH_ATTR command_function(void *parg)
 	os_timer_disarm(&delay_timer);
 	if (color) {
 		armed = true;
-		rtc_value = system_get_rtc_time();
+		rtc_value = system_get_time();
 	} else {
 		armed = false;
 	}
