@@ -50,8 +50,6 @@ void ICACHE_FLASH_ATTR tcp_connection_init(void)
 	if (espconn_regist_time(&listen_socket, 0, 0)) {
 		os_printf("tcp_connection: failed to set timeout.\n");
 	}
-
-	ready_to_send = true;
 }
 
 static void ICACHE_FLASH_ATTR connect_cb(void *arg)
@@ -82,6 +80,7 @@ static void ICACHE_FLASH_ATTR connect_cb(void *arg)
 		    ("tcp_connection: failed to set disconnect callback.\n");
 	}
 
+	ready_to_send = true;
 	node_notify(GOT_TERMINAL);
 }
 
@@ -104,7 +103,7 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 		os_printf("TCP connection failure.\n");
 		break;
 	}
-
+	queue_clear(&message_queue);
 	node_notify(TERMINAL_LOST);
 }
 
