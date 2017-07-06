@@ -105,7 +105,7 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 		os_printf("TCP connection failure.\n");
 		break;
 	}
-	queue_clear(&message_queue);
+	queue_clear(message_queue);
 	ready_to_send = true;
 	tcp_up = false;
 	node_notify(TERMINAL_LOST);
@@ -114,7 +114,7 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg)
 {
 	os_printf("Terminal disconnected.\n");
-	queue_clear(&message_queue);
+	queue_clear(message_queue);
 	ready_to_send = true;
 	tcp_up = false;
 	node_notify(TERMINAL_LOST);
