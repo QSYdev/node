@@ -30,24 +30,25 @@ ICACHE_FLASH_ATTR struct queue *queue_create(uint8_t elem_size, uint8_t capacity
 	ptr->elem_size = elem_size;
 	ptr->capacity = capacity;
 	ptr->data = data;
-
 	return ptr;
 }
 
 ICACHE_FLASH_ATTR void queue_push(struct queue *q, const void *elem) {
 	os_memcpy(q->data + q->head * q->elem_size, elem, q->elem_size);
-	q->head = (q->head + 1) % q->capacity;
+	if (++(q->head) == q->capacity)
+		q->head = 0;
 	q->size++;
 }
 
 ICACHE_FLASH_ATTR void queue_pop(struct queue *q, void *elem) {
 	os_memcpy(elem, q->data + q->tail * q->elem_size, q->elem_size);
-	q->tail = (q->tail + 1) % q->capacity;
+	if(++ (q->tail) == q->capacity)
+		q->tail = 0;
 	q->size--;
 }
 
 ICACHE_FLASH_ATTR bool queue_is_empty(const struct queue *q) {
-	return !q->size;
+	return q->size == 0;
 }
 
 ICACHE_FLASH_ATTR bool queue_is_full(const struct queue *q) {
@@ -55,7 +56,9 @@ ICACHE_FLASH_ATTR bool queue_is_full(const struct queue *q) {
 }
 
 ICACHE_FLASH_ATTR void queue_clear(struct queue *q) {
-	q->head = q->tail = q->size = 0;
+	q->head = 0;
+	q->tail = 0;
+	q->size = 0;
 }
 
 ICACHE_FLASH_ATTR void queue_destroy(struct queue *q) {

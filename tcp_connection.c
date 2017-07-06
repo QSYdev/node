@@ -31,6 +31,7 @@ static void sent_cb(void *conn);
 static struct espconn *connection;
 static struct queue *message_queue;
 static volatile bool ready_to_send;
+static bool tcp_up = false;
 
 /* Not idempotent! */
 void ICACHE_FLASH_ATTR tcp_connection_init(void)
@@ -81,6 +82,7 @@ static void ICACHE_FLASH_ATTR connect_cb(void *arg)
 	}
 
 	ready_to_send = true;
+	tcp_up = true;
 	node_notify(GOT_TERMINAL);
 }
 
@@ -104,12 +106,17 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 		break;
 	}
 	queue_clear(&message_queue);
+	ready_to_send = true;
+	tcp_up = false;
 	node_notify(TERMINAL_LOST);
 }
 
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg)
 {
 	os_printf("Terminal disconnected.\n");
+	queue_clear(&message_queue);
+	ready_to_send = true;
+	tcp_up = false;
 	node_notify(TERMINAL_LOST);
 }
 
@@ -157,6 +164,10 @@ static void ICACHE_FLASH_ATTR sent_cb(void *conn)
 
 void ICACHE_FLASH_ATTR tcp_connection_send_message(struct qsy_message *message)
 {
+	if (!tcp_up) {
+		os_printf("TCP connection not ready. Dropping...\n");
+		return;
+	}
 	if (ready_to_send) {
 		msg = *message;
 		do_send_message(&msg);

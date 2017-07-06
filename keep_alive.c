@@ -25,11 +25,13 @@ void ICACHE_FLASH_ATTR keep_alive_start(void)
 	os_timer_disarm(&msg_timer);
 	os_timer_setfn(&msg_timer, (os_timer_func_t *) timer_cb, NULL);
 	os_timer_arm(&msg_timer, PERIOD, true);
+	os_printf("Keepalive started\n");
 }
 
 void ICACHE_FLASH_ATTR keep_alive_stop(void)
 {
 	os_timer_disarm(&msg_timer);
+	os_printf("Keepalive stopped\n");
 }
 
 static void timer_cb(void *arg)

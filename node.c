@@ -14,9 +14,9 @@ void node_notify(uint16_t event)
 	switch (event) {
 	case GOT_IP:
 	case TERMINAL_LOST:
-		hello_start();
-		command_stop();
 		keep_alive_stop();
+		command_stop();
+		hello_start();
 		break;
 	case GOT_TERMINAL:
 		hello_stop();
