@@ -5,6 +5,7 @@
 #include "ets_sys.h"
 #include "sensor.h"
 #include "command.h"
+#include "espmissingincludes.h"
 
 static void sensor_cb();
 

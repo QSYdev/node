@@ -5,6 +5,7 @@
 #include "eagle_soc.h"
 #include "led.h"
 #include "gpio.h"
+#include "espmissingincludes.h"
 
 #define GPIO2 4
 

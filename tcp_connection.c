@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include "tcp_connection.h"
 #include "osapi.h"
 #include "os_type.h"
@@ -10,6 +11,7 @@
 #include "node.h"
 #include "message_receiver.h"
 #include "queue.h"
+#include "espmissingincludes.h"
 
 static struct _esp_tcp tcp_params = {
 	.local_port = QSY_LISTEN_PORT
@@ -128,7 +130,7 @@ static void ICACHE_FLASH_ATTR recv_cb(void *conn, char *pdata, unsigned short le
 static void ICACHE_FLASH_ATTR do_send_message(struct qsy_message *message)
 {
 	int8_t res;
-	if (res = espconn_send(connection, message, QSY_MSG_SIZE)) {
+	if ((res = espconn_send(connection, (uint8_t*) message, QSY_MSG_SIZE))) {
 		os_printf("tcp_connection_send_message: \n");
 		switch (res) {
 		case ESPCONN_MEM:

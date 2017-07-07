@@ -8,6 +8,8 @@
 #include "hello.h"
 #include "command.h"
 #include "keep_alive.h"
+#include "espmissingincludes.h"
+
 
 void node_notify(uint16_t event)
 {

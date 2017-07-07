@@ -8,6 +8,8 @@
 #include "ip_addr.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "espmissingincludes.h"
+#include "network.h"
 
 #define PERIOD 500
 
@@ -17,7 +19,7 @@ static struct qsy_message keep_alive_msg = {
 	.id = NODE_ID
 };
 
-static volatile os_timer_t msg_timer;
+static os_timer_t msg_timer;
 static void timer_cb(void *arg);
 
 void ICACHE_FLASH_ATTR keep_alive_start(void)

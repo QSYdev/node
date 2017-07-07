@@ -9,6 +9,8 @@
 #include "message.h"
 #include "protocol.h"
 #include "led.h"
+#include "network.h"
+#include "espmissingincludes.h"
 
 #define PERIOD 500
 
@@ -22,7 +24,7 @@ static struct qsy_message hello_msg = {
 	.id = NODE_ID
 };
 
-static volatile os_timer_t msg_timer;
+static os_timer_t msg_timer;
 static void timer_cb(void *arg);
 static uint16_t color;
 

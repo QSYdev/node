@@ -3,6 +3,7 @@
 #include "ssid.h"
 #include "wifi.h"
 #include "node.h"
+#include "espmissingincludes.h"
 
 static struct station_config wifi_config;
 

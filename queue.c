@@ -2,6 +2,7 @@
 #include "mem.h"
 #include "osapi.h"
 #include "c_types.h"
+#include "espmissingincludes.h"
 
 struct queue {
 	uint8_t head;

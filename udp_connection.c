@@ -7,6 +7,7 @@
 #include "udp_connection.h"
 #include "message.h"
 #include "protocol.h"
+#include "espmissingincludes.h"
 
 static espconn_sent_callback sent_cb(void *arg);
 
