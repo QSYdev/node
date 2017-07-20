@@ -1,20 +1,14 @@
 #include "message_receiver.h"
 #include "command.h"
+#include "packet.h"
 
 void message_receiver_cb(char *pdata, unsigned short length)
 {
-	if (length == QSY_MSG_SIZE) {
-		struct qsy_message *msg = (struct qsy_message *) pdata;
+	if (length == QSY_PACKET_SIZE) {
+		struct qsy_packet *packet = (struct qsy_packet *) pdata;
 
-		if (msg->signature[0] == 'Q' && msg->signature[1] == 'S'
-		    && msg->signature[2] == 'Y') {
-			switch (msg->type) {
-			case CMD_MSG:{
-					command_message_received(pdata);
-					break;
-				}
-			}
-		}
+		if (packet_is_valid(packet)
+		    && packet_get_type(packet) == command)
+			command_packet_received(pdata);
 	}
-
 }

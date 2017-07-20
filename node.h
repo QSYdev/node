@@ -8,5 +8,5 @@
 #define TERMINAL_LOST  2
 
 void node_notify(uint16_t event);
-
-#endif	/* */
+
+#endif

@@ -7,7 +7,7 @@
 #include "user_interface.h"
 #include "espconn.h"
 #include "protocol.h"
-#include "message.h"
+#include "packet.h"
 #include "node.h"
 #include "message_receiver.h"
 #include "queue.h"
@@ -23,24 +23,25 @@ static struct espconn listen_socket = {
 	.proto = &tcp_params
 };
 
-static void ICACHE_FLASH_ATTR do_send_message(struct qsy_message *message);
+static void ICACHE_FLASH_ATTR do_send_packet(struct qsy_packet *packet);
 static void ICACHE_FLASH_ATTR connect_cb(void *arg);
 static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error);
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg);
-static void recv_cb(void *conn, char *pdata, unsigned short len);
-static void sent_cb(void *conn);
+static void recv_cb(void *connection, char *pdata, unsigned short len);
+static void sent_cb(void *connection);
 
 static struct espconn *connection;
-static struct queue *message_queue;
-static volatile bool ready_to_send;
+static struct queue *packet_queue;
+static struct qsy_packet outgoing_packet;
+static bool ready_to_send;
 static bool tcp_up = false;
 
 /* Not idempotent! */
 void ICACHE_FLASH_ATTR tcp_connection_init(void)
 {
-	message_queue = queue_create(QSY_MSG_SIZE, 4);
+	packet_queue = queue_create(QSY_PACKET_SIZE, 4);
 
-	if (!message_queue)
+	if (!packet_queue)
 		os_printf("Could not create message queue!");
 
 	espconn_regist_connectcb(&listen_socket,
@@ -61,26 +62,27 @@ static void ICACHE_FLASH_ATTR connect_cb(void *arg)
 	os_printf("Connected to terminal.\n");
 
 	if (espconn_set_opt
-	    (&listen_socket, ESPCONN_KEEPALIVE | ESPCONN_NODELAY)) {
+	    (connection, ESPCONN_KEEPALIVE | ESPCONN_NODELAY)) {
 		os_printf("tcp_connection: failed to set options.\n");
+		return;
 	}
 
-	if (espconn_regist_sentcb
-	    (connection, (espconn_sent_callback) sent_cb)) {
+	if (espconn_regist_sentcb(connection, sent_cb)) {
 		os_printf
 		    ("tcp_connection: failed to set receive callback.\n");
+		return;
 	}
 
-	if (espconn_regist_recvcb
-	    (connection, (espconn_recv_callback) recv_cb)) {
+	if (espconn_regist_recvcb(connection, recv_cb)) {
 		os_printf
 		    ("tcp_connection: failed to set receive callback.\n");
+		return;
 	}
 
-	if (espconn_regist_disconcb
-	    (connection, (espconn_connect_callback) disconnect_cb)) {
+	if (espconn_regist_disconcb(connection, disconnect_cb)) {
 		os_printf
 		    ("tcp_connection: failed to set disconnect callback.\n");
+		return;
 	}
 
 	ready_to_send = true;
@@ -107,7 +109,7 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 		os_printf("TCP connection failure.\n");
 		break;
 	}
-	queue_clear(message_queue);
+	queue_clear(packet_queue);
 	ready_to_send = true;
 	tcp_up = false;
 	node_notify(TERMINAL_LOST);
@@ -116,21 +118,24 @@ static void ICACHE_FLASH_ATTR reconnect_cb(void *arg, int8_t error)
 static void ICACHE_FLASH_ATTR disconnect_cb(void *arg)
 {
 	os_printf("Terminal disconnected.\n");
-	queue_clear(message_queue);
+	queue_clear(packet_queue);
 	ready_to_send = true;
 	tcp_up = false;
 	node_notify(TERMINAL_LOST);
 }
 
-static void ICACHE_FLASH_ATTR recv_cb(void *conn, char *pdata, unsigned short len)
+static void ICACHE_FLASH_ATTR recv_cb(void *connection, char *pdata,
+				      unsigned short len)
 {
 	message_receiver_cb(pdata, len);
 }
 
-static void ICACHE_FLASH_ATTR do_send_message(struct qsy_message *message)
+static void ICACHE_FLASH_ATTR do_send_packet(struct qsy_packet *packet)
 {
 	int8_t res;
-	if ((res = espconn_send(connection, (uint8_t*) message, QSY_MSG_SIZE))) {
+	if ((res =
+	     espconn_send(connection, (uint8_t *) packet,
+			  QSY_PACKET_SIZE))) {
 		os_printf("tcp_connection_send_message: \n");
 		switch (res) {
 		case ESPCONN_MEM:
@@ -151,34 +156,32 @@ static void ICACHE_FLASH_ATTR do_send_message(struct qsy_message *message)
 	}
 }
 
-static struct qsy_message msg;
-
-static void ICACHE_FLASH_ATTR sent_cb(void *conn)
+static void ICACHE_FLASH_ATTR sent_cb(void *connection)
 {
-	if (!queue_is_empty(message_queue)) {
-		
-		queue_pop(message_queue, &msg);
-		do_send_message(&msg);
+	if (!queue_is_empty(packet_queue)) {
+		queue_pop(packet_queue, &outgoing_packet);
+		do_send_packet(&outgoing_packet);
 	} else {
 		ready_to_send = true;
 	}
 }
 
-void ICACHE_FLASH_ATTR tcp_connection_send_message(struct qsy_message *message)
+void ICACHE_FLASH_ATTR tcp_connection_send_packet(struct qsy_packet
+						  *packet)
 {
 	if (!tcp_up) {
 		os_printf("TCP connection not ready. Dropping...\n");
 		return;
 	}
 	if (ready_to_send) {
-		msg = *message;
-		do_send_message(&msg);
+		outgoing_packet = *packet;
+		do_send_packet(&outgoing_packet);
 		ready_to_send = false;
 	} else {
-		if (queue_is_full(message_queue))
-			os_printf("Message queue full. Dropping message!\n");
+		if (queue_is_full(packet_queue))
+			os_printf("Packet queue full. Dropping packet!\n");
 		else
-			queue_push(message_queue, message);
+			queue_push(packet_queue, packet);
 	}
 
 }

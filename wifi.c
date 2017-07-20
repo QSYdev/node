@@ -11,7 +11,7 @@ static void wifi_cb(System_Event_t * evt);
 
 void ICACHE_FLASH_ATTR wifi_init(void)
 {
-	os_printf("wifi_init: Setting up 802.11 to station mode ... ");   
+	os_printf("wifi_init: Setting up 802.11 to station mode ... ");
 	if (!wifi_set_opmode_current(1)) {
 		os_printf("Failed to set 802.11 station mode!\n");
 	}
@@ -27,9 +27,7 @@ void ICACHE_FLASH_ATTR wifi_init(void)
 static void ICACHE_FLASH_ATTR wifi_cb(System_Event_t * evt)
 {
 	if (evt->event == EVENT_STAMODE_GOT_IP) {
-	os_printf("Got IP!\n");
-	node_notify(GOT_IP);   
+		os_printf("Got IP!\n");
+		node_notify(GOT_IP);
 	}
 }
-
-

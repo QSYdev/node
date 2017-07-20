@@ -7,5 +7,4 @@ void sensor_start(void);
 
 void sensor_stop(void);
 
- 
 #endif

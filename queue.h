@@ -8,7 +8,7 @@ struct queue;
 /*
  * Creates a new queue that holds elements of size "elem_size", of capacity "capacity".
  */
-struct queue * queue_create(uint8_t elem_size, uint8_t capacity);
+struct queue *queue_create(uint8_t elem_size, uint8_t capacity);
 
 /*
  * Pushes an element into the queue. Does not do bound checking.

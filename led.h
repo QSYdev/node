@@ -2,7 +2,17 @@
 #define LED_H
 
 #include <stdint.h>
-void ICACHE_FLASH_ATTR led_init(void);
-void ICACHE_FLASH_ATTR led_set_color(uint16_t color);
- 
-#endif	/*  */
+#include <stdbool.h>
+#include "color.h"
+
+
+void led_init(void);
+
+void led_set_color(struct color col);
+
+void led_turn_off();
+
+bool led_is_on();
+
+
+#endif

@@ -5,7 +5,6 @@
 #include "user_interface.h"
 #include "espconn.h"
 #include "udp_connection.h"
-#include "message.h"
 #include "protocol.h"
 #include "espmissingincludes.h"
 
