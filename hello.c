@@ -50,9 +50,9 @@ static void timer_cb(void *arg)
 {
 	udp_connection_send_message(&hello_packet, QSY_PACKET_SIZE);
 	if (color.red || color.green || color.blue) {
-		color.blue = 0xF;
-	} else {
 		color.red = color.green = color.blue = 0;
+	} else {
+		color.blue = 0xF;
 	}
 	led_set_color(color);
 }

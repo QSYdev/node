@@ -2,10 +2,10 @@
 #include "network.h"
 #include "espmissingincludes.h"
 
-#define RED_COMPONENT(x)   (x)     & 0xF
-#define GREEN_COMPONENT(x) (x)>>4  & 0xF
-#define BLUE_COMPONENT(x)  (x)>>8  & 0xF
-#define COLOR(r,g,b) (((r) & 0xF) | (((g) & 0xF) << 4) | (((b) & 0xF) << 8))
+#define RED_COMPONENT(x)   (x) >> 12 & 0xF
+#define GREEN_COMPONENT(x) (x) >> 8  & 0xF
+#define BLUE_COMPONENT(x)  (x) >> 4  & 0xF
+#define COLOR(r,g,b) ((((r) & 0xF) << 12) | (((g) & 0xF) << 8) | (((b) & 0xF) << 4))
 
 struct qsy_packet_p {
 	char signature[3];
