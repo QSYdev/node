@@ -62,7 +62,7 @@ static void ICACHE_FLASH_ATTR connect_cb(void *arg)
 	os_printf("Connected to terminal.\n");
 
 	if (espconn_set_opt
-	    (connection, ESPCONN_KEEPALIVE | ESPCONN_NODELAY)) {
+	    (&listen_socket, ESPCONN_KEEPALIVE | ESPCONN_NODELAY)) {
 		os_printf("tcp_connection: failed to set options.\n");
 		return;
 	}

@@ -1,4 +1,5 @@
 #include "ets_sys.h"
+#include "gpio.h"
 #include "led.h"
 #include "wifi.h"
 #include "tcp_connection.h"
@@ -10,6 +11,7 @@
 #include "keep_alive.h"
 #include "espmissingincludes.h"
 
+#define BLINK_PERIOD 250
 
 void node_notify(uint16_t event)
 {
@@ -19,11 +21,15 @@ void node_notify(uint16_t event)
 		keep_alive_stop();
 		command_stop();
 		hello_start();
+		led_init();
+		led_set_blink(BLINK_PERIOD);
 		break;
 	case GOT_TERMINAL:
 		hello_stop();
 		command_start();
 		keep_alive_start();
+		led_set_blink(0);
+		led_turn_off();
 		break;
 	default:
 		break;
@@ -34,6 +40,7 @@ void ICACHE_FLASH_ATTR user_init()
 {
 	uart_div_modify(0, UART_CLK_FREQ / 115200);
 
+	gpio_init();
 	tcp_connection_init();
 	led_init();
 	wifi_init();

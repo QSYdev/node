@@ -66,6 +66,7 @@ void ICACHE_FLASH_ATTR command_touched(void)
 static void ICACHE_FLASH_ATTR command_function(void *parg)
 {
 	led_set_color(color);
+	led_turn_on();
 	os_timer_disarm(&delay_timer);
 	if (color.red || color.green || color.blue) {
 		armed = true;
