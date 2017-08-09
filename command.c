@@ -45,9 +45,14 @@ void ICACHE_FLASH_ATTR command_packet_received(char *pdata)
 		struct qsy_packet *packet = (struct qsy_packet *) pdata;
 		os_timer_disarm(&delay_timer);
 		color = packet_get_color(packet);
-		os_timer_setfn(&delay_timer, command_function, NULL);
-		os_timer_arm(&delay_timer, packet_get_delay(packet),
-			     false);
+		if (packet_get_delay(packet)) {
+			os_timer_setfn(&delay_timer, command_function, NULL);
+			os_timer_arm(&delay_timer, packet_get_delay(packet),
+			    	 false);
+		} else {
+			command_function(NULL);
+		}
+		os_printf("Command, color: %d\n", color);
 	}
 }
 
