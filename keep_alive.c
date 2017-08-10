@@ -24,7 +24,9 @@ static void timer_cb(void *arg);
 
 void ICACHE_FLASH_ATTR keep_alive_start(void)
 {
-	uint32_t delay = system_get_time() / 1000;
+	uint32_t delay = system_get_time() % PERIOD;
+	if (!delay)
+		delay = 10;
 	os_timer_disarm(&start_timer);
 	os_timer_setfn(&start_timer, (os_timer_func_t *) keep_alive_init, NULL);
 	os_timer_arm(&start_timer, delay, false);
