@@ -1,4 +1,5 @@
 #include "keep_alive.h"
+#include <stdbool.h>
 #include "tcp_connection.h"
 #include "packet.h"
 #include "udp_connection.h"
@@ -15,11 +16,25 @@
 
 static struct qsy_packet keepalive_packet;
 
+static os_timer_t start_timer;
+static void keep_alive_init(void *arg);
+
 static os_timer_t msg_timer;
 static void timer_cb(void *arg);
 
 void ICACHE_FLASH_ATTR keep_alive_start(void)
 {
+	uint32_t delay = system_get_time() / 1000;
+	os_timer_disarm(&start_timer);
+	os_timer_setfn(&start_timer, (os_timer_func_t *) keep_alive_init, NULL);
+	os_timer_arm(&start_timer, delay, false);
+	os_printf("Delay = %d\n", delay);
+}
+
+static void ICACHE_FLASH_ATTR keep_alive_init(void *arg)
+{
+	os_timer_disarm(&start_timer);
+
 	packet_init(&keepalive_packet);
 	packet_set_type(&keepalive_packet, keepalive);
 
@@ -31,6 +46,7 @@ void ICACHE_FLASH_ATTR keep_alive_start(void)
 
 void ICACHE_FLASH_ATTR keep_alive_stop(void)
 {
+	os_timer_disarm(&start_timer);
 	os_timer_disarm(&msg_timer);
 	os_printf("Keepalive stopped\n");
 }
