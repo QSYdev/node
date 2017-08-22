@@ -22,6 +22,11 @@ void node_notify(uint16_t event)
 		command_stop();
 		hello_start();
 		led_init();
+		struct color color;
+		color.red = 0;
+		color.green = 0;
+		color.blue = 15;
+		led_set_color(color);
 		led_set_blink(BLINK_PERIOD);
 		break;
 	case GOT_TERMINAL:
