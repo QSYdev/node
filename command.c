@@ -52,7 +52,6 @@ void ICACHE_FLASH_ATTR command_packet_received(char *pdata)
 		} else {
 			command_function(NULL);
 		}
-		os_printf("Command, color: %d\n", color);
 	}
 }
 

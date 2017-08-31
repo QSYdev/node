@@ -1,6 +1,7 @@
 #include "packet.h"
 #include "network.h"
 #include "espmissingincludes.h"
+#include "ssid.h"
 
 #define RED_COMPONENT(x)   (x) >> 12 & 0xF
 #define GREEN_COMPONENT(x) (x) >> 8  & 0xF

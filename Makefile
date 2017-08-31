@@ -1,5 +1,5 @@
 CC = xtensa-lx106-elf-gcc
-CFLAGS = -I. -mlongcalls -DICACHE_FLASH -DNODE_ID=$(id) -Wall -Wno-missing-braces -Os
+CFLAGS = -I. -mlongcalls -DICACHE_FLASH -Wall -Wno-missing-braces -Os
 LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lpwm -lc -Wl,--end-group -lgcc
 LDFLAGS = -Tmy.eagle.app.v6.ld
 
