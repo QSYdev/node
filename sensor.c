@@ -1,36 +1,45 @@
 #include "c_types.h"
 #include "osapi.h"
+#include <stdbool.h>
 #include "eagle_soc.h"
 #include "gpio.h"
 #include "ets_sys.h"
+#include "user_interface.h"
 #include "sensor.h"
 #include "command.h"
 #include "espmissingincludes.h"
 
-static void sensor_cb();
+/* en milisegundos */
+#define READ_PERIOD 50
+#define FAR_THRESHOLD 512
+#define CLOSE_THRESHOLD 128
+
+os_timer_t timer;
+
+static void timer_cb(void *arg);
 
 void ICACHE_FLASH_ATTR sensor_init(void)
 {
-	ETS_GPIO_INTR_DISABLE();
+}
 
-	gpio_pin_intr_state_set(GPIO_ID_PIN(0), GPIO_PIN_INTR_POSEDGE);
-	ETS_GPIO_INTR_ATTACH(sensor_cb, NULL);
-
-	ETS_GPIO_INTR_ENABLE();
+void ICACHE_FLASH_ATTR sensor_start(void)
+{
+	os_timer_disarm(&timer);
+	os_timer_setfn(&timer, timer_cb, NULL);
+	os_timer_arm(&timer, READ_PERIOD, true);
 }
 
 void ICACHE_FLASH_ATTR sensor_stop(void)
 {
-	ETS_GPIO_INTR_DISABLE();
-
-	gpio_pin_intr_state_set(GPIO_ID_PIN(0), GPIO_PIN_INTR_DISABLE);
-
-	ETS_GPIO_INTR_ENABLE();
+	os_timer_disarm(&timer);
 }
 
-static void ICACHE_FLASH_ATTR sensor_cb(void)
+static void ICACHE_FLASH_ATTR timer_cb(void *arg)
 {
-	command_touched();
-	uint32_t gpio_status = GPIO_REG_READ(GPIO_STATUS_ADDRESS);
-	GPIO_REG_WRITE(GPIO_STATUS_W1TC_ADDRESS, gpio_status);
+	uint16_t adc = system_adc_read();
+	if (adc > CLOSE_THRESHOLD)
+		command_touched();
+	else if (adc > FAR_THRESHOLD)
+		command_touched();
+	os_printf("%u\n", adc);
 }

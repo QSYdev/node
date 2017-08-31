@@ -64,6 +64,7 @@ void ICACHE_FLASH_ATTR command_touched(void)
 		tcp_connection_send_packet(&touche_packet);
 		armed = false;
 		led_turn_off();
+		sensor_stop();
 	}
 }
 
@@ -73,9 +74,11 @@ static void ICACHE_FLASH_ATTR command_function(void *parg)
 	led_turn_on();
 	os_timer_disarm(&delay_timer);
 	if (color.red || color.green || color.blue) {
+		sensor_start();
 		armed = true;
 		rtc_value = system_get_time();
 	} else {
 		armed = false;
+		sensor_stop();
 	}
 }
