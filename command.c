@@ -8,6 +8,7 @@
 #include "led.h"
 #include "espmissingincludes.h"
 #include "tcp_connection.h"
+#include "sensor.h"
 
 static os_timer_t delay_timer;
 static void ICACHE_FLASH_ATTR command_function(void *parg);
@@ -60,6 +61,7 @@ void ICACHE_FLASH_ATTR command_touched(void)
 	if (on && armed) {
 		uint32_t delay = system_get_time() - rtc_value;
 		delay /= 1000;
+		packet_set_color(&touche_packet, color);
 		packet_set_delay(&touche_packet, delay);
 		tcp_connection_send_packet(&touche_packet);
 		armed = false;

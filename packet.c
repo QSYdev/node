@@ -7,6 +7,8 @@
 #define GREEN_COMPONENT(x) (x) >> 8  & 0xF
 #define BLUE_COMPONENT(x)  (x) >> 4  & 0xF
 #define COLOR(r,g,b) ((((r) & 0xF) << 12) | (((g) & 0xF) << 8) | (((b) & 0xF) << 4))
+#define DISTANCE_FLAG_BIT 0
+#define SOUND_FLAG_BIT 1
 
 struct qsy_packet_p {
 	char signature[3];
@@ -14,6 +16,7 @@ struct qsy_packet_p {
 	uint16_t id;
 	uint16_t color;
 	uint32_t delay;
+	uint16_t config;
 } __attribute__ ((packed));
 
 void ICACHE_FLASH_ATTR packet_init(struct qsy_packet *packet)
@@ -45,10 +48,40 @@ struct color ICACHE_FLASH_ATTR packet_get_color(const struct qsy_packet *packet)
 	return res;
 }
 
-uint32_t ICACHE_FLASH_ATTR packet_get_delay(const struct qsy_packet * packet)
+uint32_t ICACHE_FLASH_ATTR packet_get_delay(const struct qsy_packet *packet)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
 	return ntohl(p->delay);
+}
+
+bool ICACHE_FLASH_ATTR packet_get_sound(const struct qsy_packet *packet)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	return (1 << SOUND_FLAG_BIT) & p->config;
+}
+
+bool ICACHE_FLASH_ATTR packet_get_distance(const struct qsy_packet *packet)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	return (1 << DISTANCE_FLAG_BIT) & p->config;
+}
+
+void ICACHE_FLASH_ATTR packet_set_sound(const struct qsy_packet *packet, bool value)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	if (value)
+		p->config |=  1 << SOUND_FLAG_BIT;
+	else
+		p->config &= ~(1 << SOUND_FLAG_BIT);
+}
+
+void ICACHE_FLASH_ATTR packet_set_distance(const struct qsy_packet *packet, bool value)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	if (value)
+		p->config |=  1 << DISTANCE_FLAG_BIT;
+	else
+		p->config &= ~(1 << DISTANCE_FLAG_BIT);
 }
 
 void ICACHE_FLASH_ATTR packet_set_type(struct qsy_packet *packet, enum packet_type type)

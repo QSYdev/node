@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "color.h"
 
-#define QSY_PACKET_SIZE 12
+#define QSY_PACKET_SIZE 16
 
 struct qsy_packet {
 	char private[QSY_PACKET_SIZE];
@@ -33,5 +33,13 @@ void packet_set_color(struct qsy_packet *packet, struct color c);
 void packet_set_delay(struct qsy_packet *packet, uint32_t delay);
 
 bool packet_is_valid(const struct qsy_packet *packet);
+
+void packet_set_sound(const struct qsy_packet *packet, bool value);
+
+void packet_set_distance(const struct qsy_packet *packet, bool value);
+
+bool packet_get_distance(const struct qsy_packet *packet);
+
+bool packet_get_sound(const struct qsy_packet *packet);
 
 #endif
