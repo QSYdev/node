@@ -30,7 +30,7 @@ keep_alive.o: keep_alive.c keep_alive.h tcp_connection.h packet.h network.h
 
 queue.o: queue.c queue.h
 
-packet.o: packet.c packet.h
+packet.o: packet.c packet.h ssid.h
 
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin
