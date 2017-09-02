@@ -16,7 +16,7 @@
  */
 
 #define CHANNEL_COUNT 3
-#define PWM_PERIOD 10000
+#define PWM_PERIOD 8000
 #define MAX_DUTY (PWM_PERIOD * 1000 / 40)
 #define RED_CHANNEL   0
 #define GREEN_CHANNEL 1
@@ -52,18 +52,18 @@ void ICACHE_FLASH_ATTR led_set_color(struct color col)
 /* Configura y prende */
 void ICACHE_FLASH_ATTR led_turn_on()
 {
-	pwm_set_duty(MAX_DUTY - MAX_DUTY/16 * color.red, RED_CHANNEL);
-	pwm_set_duty(MAX_DUTY - MAX_DUTY/16 * color.green, GREEN_CHANNEL);
-	pwm_set_duty(MAX_DUTY - MAX_DUTY/16 * color.blue, BLUE_CHANNEL);
+	pwm_set_duty(MAX_DUTY * color.red, RED_CHANNEL);
+	pwm_set_duty(MAX_DUTY * color.green, GREEN_CHANNEL);
+	pwm_set_duty(MAX_DUTY * color.blue, BLUE_CHANNEL);
 	pwm_start();
 	on = true;
 }
 
 void ICACHE_FLASH_ATTR led_turn_off()
 {
-	pwm_set_duty(MAX_DUTY, RED_CHANNEL);
-	pwm_set_duty(MAX_DUTY, GREEN_CHANNEL);
-	pwm_set_duty(MAX_DUTY, BLUE_CHANNEL);
+	pwm_set_duty(0, RED_CHANNEL);
+	pwm_set_duty(0, GREEN_CHANNEL);
+	pwm_set_duty(0, BLUE_CHANNEL);
 	pwm_start();
 	on = false;
 }
