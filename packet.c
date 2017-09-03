@@ -57,31 +57,35 @@ uint32_t ICACHE_FLASH_ATTR packet_get_delay(const struct qsy_packet *packet)
 bool ICACHE_FLASH_ATTR packet_get_sound(const struct qsy_packet *packet)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
-	return (1 << SOUND_FLAG_BIT) & p->config;
+	return (1 << SOUND_FLAG_BIT) & ntohs(p->config);
 }
 
 bool ICACHE_FLASH_ATTR packet_get_distance(const struct qsy_packet *packet)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
-	return (1 << DISTANCE_FLAG_BIT) & p->config;
+	return (1 << DISTANCE_FLAG_BIT) & ntohs(p->config);
 }
 
 void ICACHE_FLASH_ATTR packet_set_sound(const struct qsy_packet *packet, bool value)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	uint16_t config = ntohs(p->config);
 	if (value)
-		p->config |=  1 << SOUND_FLAG_BIT;
+		config |=  1 << SOUND_FLAG_BIT;
 	else
-		p->config &= ~(1 << SOUND_FLAG_BIT);
+		config &= ~(1 << SOUND_FLAG_BIT);
+	p->config = htons(p->config);
 }
 
 void ICACHE_FLASH_ATTR packet_set_distance(const struct qsy_packet *packet, bool value)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	uint16_t config = ntohs(p->config);
 	if (value)
-		p->config |=  1 << DISTANCE_FLAG_BIT;
+		config |=  1 << DISTANCE_FLAG_BIT;
 	else
-		p->config &= ~(1 << DISTANCE_FLAG_BIT);
+		config &= ~(1 << DISTANCE_FLAG_BIT);
+	p->config = htons(p->config);
 }
 
 void ICACHE_FLASH_ATTR packet_set_type(struct qsy_packet *packet, enum packet_type type)
