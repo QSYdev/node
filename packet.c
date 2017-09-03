@@ -16,6 +16,7 @@ struct qsy_packet_p {
 	uint16_t id;
 	uint16_t color;
 	uint32_t delay;
+	uint16_t step;
 	uint16_t config;
 } __attribute__ ((packed));
 
@@ -66,7 +67,7 @@ bool ICACHE_FLASH_ATTR packet_get_distance(const struct qsy_packet *packet)
 	return (1 << DISTANCE_FLAG_BIT) & ntohs(p->config);
 }
 
-void ICACHE_FLASH_ATTR packet_set_sound(const struct qsy_packet *packet, bool value)
+void ICACHE_FLASH_ATTR packet_set_sound(struct qsy_packet *packet, bool value)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
 	uint16_t config = ntohs(p->config);
@@ -77,7 +78,7 @@ void ICACHE_FLASH_ATTR packet_set_sound(const struct qsy_packet *packet, bool va
 	p->config = htons(p->config);
 }
 
-void ICACHE_FLASH_ATTR packet_set_distance(const struct qsy_packet *packet, bool value)
+void ICACHE_FLASH_ATTR packet_set_distance(struct qsy_packet *packet, bool value)
 {
 	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
 	uint16_t config = ntohs(p->config);
@@ -111,4 +112,16 @@ bool ICACHE_FLASH_ATTR packet_is_valid(const struct qsy_packet *packet)
 {
 	return packet->private[0] == 'Q' && packet->private[1] == 'S' &&
 	    packet->private[2] == 'Y';
+}
+
+uint16_t ICACHE_FLASH_ATTR packet_get_step(const struct qsy_packet *packet)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	return ntohs(p->step);
+}
+
+void ICACHE_FLASH_ATTR packet_set_step(struct qsy_packet *packet, uint16_t step)
+{
+	struct qsy_packet_p *p = (struct qsy_packet_p *) packet;
+	p->step = htons(step);
 }

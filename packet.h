@@ -34,12 +34,16 @@ void packet_set_delay(struct qsy_packet *packet, uint32_t delay);
 
 bool packet_is_valid(const struct qsy_packet *packet);
 
-void packet_set_sound(const struct qsy_packet *packet, bool value);
+void packet_set_sound(struct qsy_packet *packet, bool value);
 
-void packet_set_distance(const struct qsy_packet *packet, bool value);
+void packet_set_distance(struct qsy_packet *packet, bool value);
 
 bool packet_get_distance(const struct qsy_packet *packet);
 
 bool packet_get_sound(const struct qsy_packet *packet);
+
+uint16_t packet_get_step(const struct qsy_packet *packet);
+
+void packet_set_step(struct qsy_packet *packet, uint16_t step);
 
 #endif

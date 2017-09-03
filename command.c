@@ -11,7 +11,7 @@
 #include "sensor.h"
 
 static os_timer_t delay_timer;
-static void ICACHE_FLASH_ATTR command_function(void *parg);
+static void ICACHE_FLASH_ATTR command_execute(void *parg);
 
 /* Módulo apagado o prendido */
 static bool on = false;
@@ -23,6 +23,8 @@ static bool armed = false;
 static uint32_t rtc_value;
 
 static struct color color;
+
+static uint16_t current_step;
 
 static struct qsy_packet touche_packet;
 
@@ -46,12 +48,13 @@ void ICACHE_FLASH_ATTR command_packet_received(char *pdata)
 		struct qsy_packet *packet = (struct qsy_packet *) pdata;
 		os_timer_disarm(&delay_timer);
 		color = packet_get_color(packet);
+		current_step = packet_get_step(packet);
 		if (packet_get_delay(packet)) {
-			os_timer_setfn(&delay_timer, command_function, NULL);
+			os_timer_setfn(&delay_timer, command_execute, NULL);
 			os_timer_arm(&delay_timer, packet_get_delay(packet),
 			    	 false);
 		} else {
-			command_function(NULL);
+			command_execute(NULL);
 		}
 	}
 }
@@ -63,6 +66,7 @@ void ICACHE_FLASH_ATTR command_touched(void)
 		delay /= 1000;
 		packet_set_color(&touche_packet, color);
 		packet_set_delay(&touche_packet, delay);
+		packet_set_step(&touche_packet, current_step);
 		tcp_connection_send_packet(&touche_packet);
 		armed = false;
 		led_turn_off();
@@ -70,7 +74,7 @@ void ICACHE_FLASH_ATTR command_touched(void)
 	}
 }
 
-static void ICACHE_FLASH_ATTR command_function(void *parg)
+static void ICACHE_FLASH_ATTR command_execute(void *parg)
 {
 	led_set_color(color);
 	led_turn_on();
