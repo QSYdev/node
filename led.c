@@ -5,52 +5,80 @@
 #include "eagle_soc.h"
 #include "led.h"
 #include "gpio.h"
+#include "espmissingincludes.h"
+#include "pwm.h"
 
+/*
+ * Sobre PWM: el período se setea en microsegundos. Los ciclos de trabajo se 
+ * setean en unidades de 40 ns (no en porcentajes), pero la implementación de
+ * Espressif tiene una limitación que hace que todo ciclo de trabajo mayor a 90%
+ * sea 100%.
+ */
 
+#define CHANNEL_COUNT 3
+#define PWM_PERIOD 8000
+#define MAX_DUTY (PWM_PERIOD * 1000 / 40)
+#define RED_CHANNEL   0
+#define GREEN_CHANNEL 1
+#define BLUE_CHANNEL  2
 
-#define GPIO2 4
+static bool on;
+static struct color color;
+static os_timer_t blink_timer;
+static uint32_t pwm_conf[CHANNEL_COUNT][3] = {
+	{PERIPHS_IO_MUX_GPIO4_U, FUNC_GPIO4, 4}, /* rojo  */
+	{PERIPHS_IO_MUX_GPIO5_U, FUNC_GPIO5, 5}, /* verde */
+	{PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2, 2}  /* azul  */
+};
+static uint32_t duty_cycles[CHANNEL_COUNT] = {MAX_DUTY, MAX_DUTY, MAX_DUTY};
 
-static void led_toggle();
+static void blink_callback(void *arg);
 
-static uint16_t color;
-static uint16_t toggle_color;
-
-static volatile os_timer_t blink_timer;
-
-void ICACHE_FLASH_ATTR led_init()
+void ICACHE_FLASH_ATTR led_init(void)
 {
-	gpio_init();
-	gpio_output_set(0, 0 , GPIO2, 0);
-	gpio_output_set(GPIO2, 0, 0, 0);
+	color.blue = 0xF;
+	pwm_init(PWM_PERIOD, duty_cycles, CHANNEL_COUNT, pwm_conf);
+	led_turn_off();
 }
 
-void ICACHE_FLASH_ATTR led_set(uint16_t col)
+void ICACHE_FLASH_ATTR led_set_color(struct color col)
 {
 	color = col;
-	if(color)
-		gpio_output_set(0, GPIO2, 0, 0); 
-	else
-		gpio_output_set(GPIO2, 0, 0, 0);     
+	if (on) {
+		led_turn_on();
+	}
 }
 
-void ICACHE_FLASH_ATTR led_blink_start(uint16_t color, uint16_t interval)
+/* Configura y prende */
+void ICACHE_FLASH_ATTR led_turn_on()
 {
-	toggle_color = color;
-	os_timer_disarm(&blink_timer);
-	os_timer_setfn(&blink_timer, (os_timer_func_t*) led_toggle, NULL);
-	os_timer_arm(&blink_timer, interval, true);
+	pwm_set_duty(MAX_DUTY * color.red, RED_CHANNEL);
+	pwm_set_duty(MAX_DUTY * color.green, GREEN_CHANNEL);
+	pwm_set_duty(MAX_DUTY * color.blue, BLUE_CHANNEL);
+	pwm_start();
+	on = true;
 }
 
-void ICACHE_FLASH_ATTR led_blink_stop()
+void ICACHE_FLASH_ATTR led_turn_off()
 {
-	os_timer_disarm(&blink_timer);
-	led_set(0);
+	pwm_set_duty(0, RED_CHANNEL);
+	pwm_set_duty(0, GREEN_CHANNEL);
+	pwm_set_duty(0, BLUE_CHANNEL);
+	pwm_start();
+	on = false;
 }
 
-static void ICACHE_FLASH_ATTR led_toggle()
+void ICACHE_FLASH_ATTR led_set_blink(uint16_t period)
 {
-	if (color)
-		led_set(0);
-	else
-		led_set(toggle_color);
+	if (period == 0) {
+		os_timer_disarm(&blink_timer);
+	} else {
+		os_timer_setfn(&blink_timer, blink_callback, NULL);
+		os_timer_arm(&blink_timer, period, true);
+	}
+}
+
+static void blink_callback(void *arg)
+{
+	on ? led_turn_off() : led_turn_on();
 }

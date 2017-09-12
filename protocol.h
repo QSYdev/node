@@ -6,6 +6,6 @@
 
 #define QSY_HELLO_PORT 3000
 
-#define QSY_LISTEN_PORT 3000 
+#define QSY_LISTEN_PORT 3000
 
 #endif

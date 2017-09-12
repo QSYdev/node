@@ -1,8 +1,9 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "c_types.h"
-
-void ICACHE_FLASH_ATTR command_init();
+void command_start(void);
+void command_stop(void);
+void command_packet_received(char *pdata);
+void command_touched(void);
 
 #endif
